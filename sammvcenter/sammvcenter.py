@@ -20,7 +20,7 @@ class VCenterSession:
 			self.config['vcenter_username'],
 			self.config['vcenter_password']))
 		headers['Content-type'] = 'application/json'
-		r = self.http.request('POST', "%s/api/session" % self.config['vcenterurl'], headers=headers)
+		r = self.http.request('POST', "%s/api/session" % self.config['vcenter_url'], headers=headers)
 		if r.status != 201:
 			raise VCUnauthenticated
 		self.session_id = json.loads(r.data.decode('ascii'))
@@ -29,7 +29,7 @@ class VCenterSession:
 			'Content-type': 'application/json',
 			'vmware-api-session-id': self.session_id
 		}
-		r = self.http.request('GET', "%s%s" % (self.config['vcenterurl'], path), headers=headers)
+		r = self.http.request('GET', "%s%s" % (self.config['vcenter_url'], path), headers=headers)
 		if res.status == 401:
 			raise VCUnauthenticated(r.data)
 		return json.loads(r.data.decode('ascii'))
@@ -38,7 +38,7 @@ class VCenterSession:
 			'Content-type': 'application/json',
 			'vmware-api-session-id': self.session_id
 		}
-		self.http.request('DELETE', "%s/api/session" % self.config['vcenterurl'], headers=headers)
+		self.http.request('DELETE', "%s/api/session" % self.config['vcenter_url'], headers=headers)
 	def search_vm(self, vm_name):
 		try:
 			vm_data = self._get("/api/vcenter/vm?names=%s" % vm_name)
@@ -57,7 +57,7 @@ vc = VCenterSession(config)
 def detail():
 	vm_data = vc.search_vm("VDISTD-10088")
 	return "%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:$VCENTERGUID/summary?navigator=tree" % (
-		vc.config['vcenterurl'], vm_data['vm'], vc.config['vcenter_guid'])
+		vc.config['vcenter_url'], vm_data['vm'], vc.config['vcenter_guid'])
 
 def main():
 	return
