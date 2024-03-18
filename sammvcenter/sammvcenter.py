@@ -57,8 +57,10 @@ vc = VCenterSession(config)
 @application.route("/detail")
 def detail():
 	vm_data = vc.search_vm("VDISTD-10088")
+	if len(vm_data) < 1:
+		return "Server not found"
 	return "%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:$VCENTERGUID/summary?navigator=tree" % (
-		vc.config['vcenter_url'], vm_data['vm'], vc.config['vcenter_guid'])
+		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid'])
 
 def main():
 	return
