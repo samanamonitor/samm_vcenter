@@ -15,6 +15,7 @@ class VCenterSession:
 	def __init__(self, config):
 		self.config = config
 		self.http = urllib3.PoolManager(cert_reqs='CERT_NONE')
+		self.session_id = None
 	def login(self):
 		headers = urllib3.make_headers(basic_auth="%s:%s" % (
 			self.config['vcenter_username'],
