@@ -5,10 +5,10 @@ import urllib3
 __version__="0.0.1"
 application = Flask(__name__)
 
-class VCUnauthenticated(VCException):
+class VCException(Exception):
 	pass
 
-class VCException(Exception):
+class VCUnauthenticated(VCException):
 	pass
 
 class VCenterSession:
