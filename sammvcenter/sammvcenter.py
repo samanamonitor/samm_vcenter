@@ -31,7 +31,7 @@ class VCenterSession:
 			'vmware-api-session-id': self.session_id
 		}
 		r = self.http.request('GET', "%s%s" % (self.config['vcenter_url'], path), headers=headers)
-		if res.status == 401:
+		if r.status == 401:
 			raise VCUnauthenticated(r.data)
 		return json.loads(r.data.decode('ascii'))
 	def logout(self):
