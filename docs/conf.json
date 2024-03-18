@@ -1,5 +1,5 @@
 {
-	"vcenterurl": "vcenter.example.com",
+	"vcenter_url": "https://vcenter.example.com",
 	"vcenter_username": "user@example.com",
 	"vcenter_password": "this is a password",
 	"vcenter_guid": "00000000-0000-0000-0000-000000000000"
