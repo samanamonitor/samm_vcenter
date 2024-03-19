@@ -41,12 +41,21 @@ class VCenterSession:
 			'vmware-api-session-id': self.session_id
 		}
 		self.http.request('DELETE', "%s/api/session" % self.config['vcenter_url'], headers=headers)
-	def search_vm(self, vm_name):
+	def search_vm(self, name):
+		uri = "/api/vcenter/vm?names=%s" % name
 		try:
-			vm_data = self._get("/api/vcenter/vm?names=%s" % vm_name)
+			vm_data = self._get(uri)
 		except VCUnauthenticated:
 			self.login()
-			vm_data = self._get("/api/vcenter/vm?names=%s" % vm_name)
+			vm_data = self._get(uri)
+		return vm_data
+	def search_host(self, name):
+		uri = "/api/vcenter/host?names=%s" % name
+		try:
+			vm_data = self._get(uri)
+		except VCUnauthenticated:
+			self.login()
+			vm_data = self._get(uri)
 		return vm_data
 
 try:
@@ -67,10 +76,10 @@ def error_detail():
 def vmdetail():
 	if error:
 		return error_detail()
-	vm_name = request.args.get('hostedmachinename')
-	if vm_name is None:
+	name = request.args.get('hostedmachinename')
+	if name is None:
 		return Response("Machine not found", status=404, mimetype="text/html")
-	vm_data = vc.search_vm(vm_name)
+	vm_data = vc.search_vm(name)
 	if len(vm_data) < 1:
 		return Response("Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:%s/summary?navigator=tree" % (
@@ -80,10 +89,10 @@ def vmdetail():
 def hostdetail():
 	if error:
 		return error_detail()
-	vm_name = request.args.get('hostingservername')
-	if vm_name is None:
+	name = request.args.get('hostingservername')
+	if name is None:
 		return Response("Machine not found", status=404, mimetype="text/html")
-	vm_data = vc.search_vm(vm_name)
+	vm_data = vc.search_host(name)
 	if len(vm_data) < 1:
 		return Response("Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/host;nav=h/urn:vmomi:HostSystem:%s:%s/summary" % (
