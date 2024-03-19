@@ -1,9 +1,10 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, Response
 import json
 import urllib3
 
 __version__="0.0.1"
 application = Flask(__name__)
+error = None
 
 class VCException(Exception):
 	pass
@@ -48,14 +49,26 @@ class VCenterSession:
 			vm_data = self._get("/api/vcenter/vm?names=%s" % vm_name)
 		return vm_data
 
+try:
+	with open("/usr/local/sammvcenter/etc/conf.json", "r") as f:
+		config = json.load(f)
+except Exception as e:
+	global error
+	error = e
 
-with open("/usr/local/sammvcenter/etc/conf.json", "r") as f:
-	config = json.load(f)
+try:
+	vc = VCenterSession(config)
+except:
+	global error
+	error = e
 
-vc = VCenterSession(config)
+def error_detail():
+	return Response("%s" % str(error), status=500, mimetype='text/html')
 
-@application.route("/detail")
-def detail():
+@application.route("/vmdetail")
+def vmdetail():
+	if error:
+		return error_detail()
 	vm_data = vc.search_vm("VDISTD-10088")
 	if len(vm_data) < 1:
 		return "Server not found"
