@@ -76,6 +76,19 @@ def vmdetail():
 	return redirect("%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:%s/summary?navigator=tree" % (
 		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid']), code=302)
 
+@application.route("/hostdetail")
+def hostdetail():
+	if error:
+		return error_detail()
+	vm_name = request.args.get('hostingservername')
+	if vm_name is None:
+		return Response("Machine not found", status=404, mimetype="text/html")
+	vm_data = vc.search_vm(vm_name)
+	if len(vm_data) < 1:
+		return Response("Machine not found", status=404, mimetype="text/html")
+	return redirect("%s/ui/app/host;nav=h/urn:vmomi:HostSystem:%s:%s/summary" % (
+		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid']), code=302)
+
 def main():
 	return
 
