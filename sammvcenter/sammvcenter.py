@@ -150,7 +150,8 @@ use redirection server name:i:0
 rdgiskdcproxy:i:0
 kdcproxyname:s:
 """
-	return Response(rdp_data % ip_address, status=200, mimetype="application/x-rdp")
+	return Response(rdp_data % ip_address, status=200, mimetype="application/x-rdp",
+		headers={'Content-Disposition': 'attachment; filename=Application.rdp'})
 
 def main():
 	return
