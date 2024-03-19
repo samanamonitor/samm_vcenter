@@ -1,4 +1,4 @@
-from flask import Flask, redirect, Response
+from flask import Flask, redirect, Response, request
 import json
 import urllib3
 
@@ -67,9 +67,12 @@ def error_detail():
 def vmdetail():
 	if error:
 		return error_detail()
-	vm_data = vc.search_vm("VDISTD-10088")
+	vm_name = request.args.get('hostedmachinename')
+	if vm_name is None:
+		return Response("Machine not found", status=404, mimetype="text/html")
+	vm_data = vc.search_vm(vm_name)
 	if len(vm_data) < 1:
-		return "Server not found"
+		return Response("Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:%s/summary?navigator=tree" % (
 		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid']), code=302)
 
