@@ -151,7 +151,7 @@ rdgiskdcproxy:i:0
 kdcproxyname:s:
 """
 	return Response(rdp_data % ip_address, status=200, mimetype="application/x-rdp",
-		headers={'Content-Disposition': 'attachment; filename=Application.rdp'})
+		headers={'Content-Disposition': 'attachment; filename=samm-connection.rdp'})
 
 def main():
 	return
