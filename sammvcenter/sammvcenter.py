@@ -53,13 +53,11 @@ try:
 	with open("/usr/local/sammvcenter/etc/conf.json", "r") as f:
 		config = json.load(f)
 except Exception as e:
-	global error
 	error = e
 
 try:
 	vc = VCenterSession(config)
 except:
-	global error
 	error = e
 
 def error_detail():
