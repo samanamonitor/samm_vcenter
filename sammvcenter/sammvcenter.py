@@ -78,10 +78,10 @@ def vmdetail():
 		return error_detail()
 	name = request.args.get('hostedmachinename')
 	if name is None:
-		return Response("Machine not found", status=404, mimetype="text/html")
+		return Response("Virtual Machine not found", status=404, mimetype="text/html")
 	data = vc.search_vm(name)
 	if len(data) < 1:
-		return Response("Machine not found", status=404, mimetype="text/html")
+		return Response("Virtual Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:%s/summary?navigator=tree" % (
 		vc.config['vcenter_url'], data[0]['vm'], vc.config['vcenter_guid']), code=302)
 
@@ -91,12 +91,66 @@ def hostdetail():
 		return error_detail()
 	name = request.args.get('hostingservername')
 	if name is None:
-		return Response("Machine not found", status=404, mimetype="text/html")
+		return Response("Host not found", status=404, mimetype="text/html")
 	data = vc.search_host(name)
 	if len(data) < 1:
-		return Response("Machine not found", status=404, mimetype="text/html")
+		return Response("Host not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/host;nav=h/urn:vmomi:HostSystem:%s:%s/summary" % (
 		vc.config['vcenter_url'], data[0]['host'], vc.config['vcenter_guid']), code=302)
+
+@application.route("/rdp")
+def rdp():
+	ip_address = request.args.get('ip_address')
+	rdp_data = """
+screen mode id:i:1
+use multimon:i:0
+desktopwidth:i:1440
+desktopheight:i:873
+session bpp:i:32
+winposstr:s:0,1,0,0,1440,833
+compression:i:1
+keyboardhook:i:2
+audiocapturemode:i:0
+videoplaybackmode:i:1
+connection type:i:7
+networkautodetect:i:1
+bandwidthautodetect:i:1
+displayconnectionbar:i:1
+enableworkspacereconnect:i:0
+disable wallpaper:i:0
+allow font smoothing:i:0
+allow desktop composition:i:0
+disable full window drag:i:1
+disable menu anims:i:1
+disable themes:i:0
+disable cursor setting:i:0
+bitmapcachepersistenable:i:1
+full address:s:%s
+
+audiomode:i:0
+redirectprinters:i:1
+redirectcomports:i:0
+redirectsmartcards:i:1
+redirectclipboard:i:1
+redirectposdevices:i:0
+autoreconnection enabled:i:1
+authentication level:i:2
+prompt for credentials:i:0
+negotiate security layer:i:1
+remoteapplicationmode:i:0
+alternate shell:s:
+shell working directory:s:
+gatewayhostname:s:
+gatewayusagemethod:i:4
+gatewaycredentialssource:i:4
+gatewayprofileusagemethod:i:0
+promptcredentialonce:i:0
+gatewaybrokeringtype:i:0
+use redirection server name:i:0
+rdgiskdcproxy:i:0
+kdcproxyname:s:
+"""
+	return Response(rdp_data % ip_address, status=200, mimetype="application/x-rdp")
 
 def main():
 	return
