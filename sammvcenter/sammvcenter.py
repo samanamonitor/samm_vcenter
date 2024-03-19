@@ -149,6 +149,8 @@ gatewaybrokeringtype:i:0
 use redirection server name:i:0
 rdgiskdcproxy:i:0
 kdcproxyname:s:
+smart sizing:i:1
+dynamic resolution:i:1
 """
 	return Response(rdp_data % ip_address, status=200, mimetype="application/x-rdp",
 		headers={'Content-Disposition': 'attachment; filename=samm-connection.rdp'})
