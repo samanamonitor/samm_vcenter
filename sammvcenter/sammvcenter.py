@@ -44,19 +44,19 @@ class VCenterSession:
 	def search_vm(self, name):
 		uri = "/api/vcenter/vm?names=%s" % name
 		try:
-			vm_data = self._get(uri)
+			data = self._get(uri)
 		except VCUnauthenticated:
 			self.login()
-			vm_data = self._get(uri)
-		return vm_data
+			data = self._get(uri)
+		return data
 	def search_host(self, name):
 		uri = "/api/vcenter/host?names=%s" % name
 		try:
-			vm_data = self._get(uri)
+			data = self._get(uri)
 		except VCUnauthenticated:
 			self.login()
-			vm_data = self._get(uri)
-		return vm_data
+			data = self._get(uri)
+		return data
 
 try:
 	with open("/usr/local/sammvcenter/etc/conf.json", "r") as f:
@@ -79,11 +79,11 @@ def vmdetail():
 	name = request.args.get('hostedmachinename')
 	if name is None:
 		return Response("Machine not found", status=404, mimetype="text/html")
-	vm_data = vc.search_vm(name)
-	if len(vm_data) < 1:
+	data = vc.search_vm(name)
+	if len(data) < 1:
 		return Response("Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/vm;nav=h/urn:vmomi:VirtualMachine:%s:%s/summary?navigator=tree" % (
-		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid']), code=302)
+		vc.config['vcenter_url'], data[0]['vm'], vc.config['vcenter_guid']), code=302)
 
 @application.route("/hostdetail")
 def hostdetail():
@@ -92,11 +92,11 @@ def hostdetail():
 	name = request.args.get('hostingservername')
 	if name is None:
 		return Response("Machine not found", status=404, mimetype="text/html")
-	vm_data = vc.search_host(name)
-	if len(vm_data) < 1:
+	data = vc.search_host(name)
+	if len(data) < 1:
 		return Response("Machine not found", status=404, mimetype="text/html")
 	return redirect("%s/ui/app/host;nav=h/urn:vmomi:HostSystem:%s:%s/summary" % (
-		vc.config['vcenter_url'], vm_data[0]['vm'], vc.config['vcenter_guid']), code=302)
+		vc.config['vcenter_url'], data[0]['host'], vc.config['vcenter_guid']), code=302)
 
 def main():
 	return
