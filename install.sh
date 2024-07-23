@@ -14,10 +14,12 @@ fi
 if [ ! -d ${SAMMVCETER_PATH} ]; then
 	mkdir -p ${SAMMVCETER_PATH}/
 	mkdir -p ${SAMMVCETER_PATH}/htdocs
+	mkdir -p ${SAMMVCETER_PATH}/ssl
 	cp docs/conf.json httpd/samm/sammvcenter.conf ${SAMMVCETER_PATH}
 fi
 
 docker run -idt --name sammvcenter -p ${HTTPPORT}:80 -p ${HTTPSPORT}:443 \
+	-v ${SAMMVCETER_PATH}/ssl:/usr/local/apache2/ssl \
 	-v ${SAMMVCETER_PATH}/conf.json:/etc/sammvcenter/conf.json \
 	-v ${SAMMVCETER_PATH}/sammvcenter.conf:/usr/local/apache2/conf/extra/sammvcenter.conf \
 	-v ${SAMMVCETER_PATH}/htdocs:/usr/local/apache2/htdocs \
