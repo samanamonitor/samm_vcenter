@@ -3,6 +3,10 @@
 set -x
 
 SAMMVCETER_PATH=$1
+if [ -z ${SAMMVCETER_PATH} ]; then
+	echo "Usage: $0 <path to sammvcenter>" >&2
+	exit 1
+fi
 
 if [ ! -d ${SAMMVCETER_PATH} ]; then
 	mkdir -p ${SAMMVCETER_PATH}/
