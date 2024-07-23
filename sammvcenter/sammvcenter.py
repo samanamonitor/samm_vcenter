@@ -59,7 +59,7 @@ class VCenterSession:
 		return data
 
 try:
-	with open("/usr/local/sammvcenter/etc/conf.json", "r") as f:
+	with open("/etc/sammvcenter/conf.json", "r") as f:
 		config = json.load(f)
 except Exception as e:
 	error = e
